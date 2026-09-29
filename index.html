@@ -393,6 +393,18 @@
                         </div>
                     </div>
 
+                    <!-- Store Link -->
+                    <div class="bg-gradient-to-br from-teal-50 to-emerald-50 border border-teal-100 rounded-2xl p-6 shadow-sm">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 bg-teal-600 rounded-xl flex items-center justify-center shadow-md"><i class="fa-solid fa-link text-white text-lg"></i></div>
+                            <div><h3 class="font-black text-gray-800">رابط متجرك</h3><p class="text-xs text-gray-500">شاركه مع عملائك — متجرك منفصل تمامًا عن باقي المتاجر</p></div>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" id="storeLinkInput" readonly dir="ltr" class="settings-input flex-1 px-3 py-3 rounded-xl bg-white text-sm text-gray-700">
+                            <button type="button" onclick="copyStoreLink()" class="btn-primary px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 shadow-md"><i class="fa-solid fa-copy"></i> نسخ</button>
+                        </div>
+                    </div>
+
                     <!-- Store Logo Settings -->
                     <div class="bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-100 rounded-2xl p-6 shadow-sm">
                         <div class="flex items-center gap-3 mb-5">
@@ -469,6 +481,41 @@
         </div>
     </div>
 
+    <!-- ===== الصفحة الرئيسية للمنصة (تظهر عند عدم تحديد متجر) ===== -->
+    <div id="platformHome" class="hidden fixed inset-0 z-[100] overflow-y-auto" style="background:radial-gradient(1000px 500px at 80% -5%,#dff0ec 0%,transparent 60%),#f4f7f6">
+        <header class="max-w-6xl mx-auto px-5 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-3"><div class="w-11 h-11 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-md"><i class="fa-solid fa-store text-white"></i></div><span class="text-xl font-black text-teal-800">منصة المتاجر</span></div>
+            <button id="platformLoginBtn" onclick="platformLogin()" class="text-sm font-bold text-teal-800 bg-white border border-teal-100 px-4 py-2.5 rounded-xl shadow-sm hover:bg-teal-50 transition"><i class="fa-solid fa-right-to-bracket ml-1"></i> دخول صاحب متجر</button>
+        </header>
+        <main class="max-w-6xl mx-auto px-5 pb-16">
+            <section class="hero-banner rounded-3xl p-8 md:p-14 text-white shadow-xl relative mb-10">
+                <div class="relative z-10 max-w-2xl">
+                    <span class="hero-chip"><i class="fa-solid fa-circle-check"></i> كل متجر مستقل بمنتجاته وطلباته</span>
+                    <h1 class="text-3xl md:text-5xl font-black mt-4 mb-3 leading-tight">تسوّق من <span class="hero-name">متاجرنا</span> بثقة</h1>
+                    <p id="platformMsg" class="text-white/80 text-sm md:text-base leading-relaxed">تصفّح المتاجر المتاحة، واختر ما يعجبك، وأرسل طلبك مباشرة عبر واتساب.</p>
+                    <button onclick="document.getElementById('platformStores').scrollIntoView({behavior:'smooth'})" class="hero-cta"><i class="fa-solid fa-store"></i> تصفّح المتاجر</button>
+                </div>
+            </section>
+            <h2 class="text-xl font-black text-gray-800 mb-4 section-title">المتاجر</h2>
+            <div id="platformStores" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+        </main>
+        <div class="pb-8 flex justify-center"><span class="mda-sign" dir="ltr" style="opacity:.6"><span class="mda-line"></span><span class="mda-mark" style="color:#b07d2b">MDA</span><span class="mda-line"></span></span></div>
+    </div>
+
+    <!-- ===== لوحة المشرف الرئيسي ===== -->
+    <div id="superAdmin" class="hidden fixed inset-0 z-[110] overflow-y-auto" style="background:#f4f7f6">
+        <header class="bg-white border-b sticky top-0 z-10">
+            <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3"><div class="w-10 h-10 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-xl flex items-center justify-center shadow-md"><i class="fa-solid fa-crown text-white"></i></div><div><h2 class="font-black text-gray-800">لوحة المشرف الرئيسي</h2><p class="text-xs text-gray-400">إنشاء المتاجر وإدارتها</p></div></div>
+                <div class="flex gap-2"><button onclick="closeSuperAdmin()" class="text-sm font-bold bg-gray-100 px-4 py-2.5 rounded-xl">الصفحة الرئيسية</button><button onclick="superLogout()" class="text-sm font-bold bg-red-50 text-red-600 px-4 py-2.5 rounded-xl"><i class="fa-solid fa-right-from-bracket ml-1"></i> خروج</button></div>
+            </div>
+        </header>
+        <main class="max-w-6xl mx-auto px-5 py-6">
+            <div class="flex items-center justify-between mb-4"><h3 class="text-lg font-black text-gray-800">المتاجر <span id="superCount" class="text-sm text-gray-400 font-bold"></span></h3><button onclick="superCreateStore()" class="btn-primary px-5 py-3 rounded-xl font-bold text-sm shadow-md"><i class="fa-solid fa-plus ml-1"></i> إنشاء متجر جديد</button></div>
+            <div id="superStores" class="grid md:grid-cols-2 gap-4"></div>
+        </main>
+    </div>
+
     <a id="waFloat" href="#" target="_blank" rel="noopener" class="wa-float" aria-label="واتساب"><i class="fa-brands fa-whatsapp"></i></a>
 
     <!-- Footer -->
@@ -528,8 +575,8 @@
     <script>
         const STORE_CONFIG = {
             // 1. معلومات المتجر الأساسية
-            storeName: "Labastak", // اسم متجر العميل
-            whatsappNumber: "22220479962", // رقم واتساب لاستقبال الطلبات (بدون +)
+            storeName: "المتجر", // يُحمّل من قاعدة البيانات حسب المتجر المفتوح
+            whatsappNumber: "", // يُحمّل من إعدادات كل متجر
             
             // 2. الموقع (يُدار من لوحة الإعدادات)
             mapUrl: "",
@@ -537,7 +584,7 @@
             locationLng: null,
             locationLabel: "",
 
-            // 3. ربط قاعدة البيانات (Supabase) الخاصة بهذا العميل
+            // 3. ربط قاعدة البيانات (Supabase) — قاعدة واحدة لكل المتاجر
             supabaseUrl: 'https://ydtqjxihhuuwkhsqnodh.supabase.co',
             supabaseAnonKey: 'sb_publishable_ueESjaK-5WK_jAPopVm6Sg_5dHWuPXZ'
         };
@@ -552,8 +599,15 @@
         document.getElementById('bannerStoreName').innerText = STORE_CONFIG.storeName;
 
         // مفاتيح التخزين المحلي
-        const STORAGE_CART_KEY = `${STORE_CONFIG.storeName}_cart`;
-        const STORAGE_FAVS_KEY = `${STORE_CONFIG.storeName}_favs`;
+        // ===== تعدد المتاجر: تحديد المتجر من الرابط (?store=اسم-المتجر) =====
+        const __qs = new URLSearchParams(location.search);
+        const STORE_SLUG = (__qs.get('store') || __qs.get('s') || location.hash.replace(/^#\/?/, '')).trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+        let STORE_ID = null;
+        // تنقية النصوص القادمة من قاعدة البيانات (حماية من حقن الأكواد بين المتاجر)
+        const __safe = v => String(v == null ? '' : v).replace(/</g, '＜').replace(/>/g, '＞').replace(/"/g, '”').replace(/'/g, '’').replace(/`/g, 'ˋ');
+        const __safeUrl = v => /^https?:\/\//i.test(String(v || '').trim()) ? __safe(String(v).trim()) : '';
+        const STORAGE_CART_KEY = `${STORE_SLUG || 'platform'}_cart`;
+        const STORAGE_FAVS_KEY = `${STORE_SLUG || 'platform'}_favs`;
 
         const db = window.supabase.createClient(STORE_CONFIG.supabaseUrl, STORE_CONFIG.supabaseAnonKey);
 
@@ -570,8 +624,9 @@
 
         async function loadProducts() {
             try {
-                const { data: products, error } = await db.from('products').select('*').order('created_at', { ascending: false });
+                const { data: products, error } = await db.from('products').select('*').eq('store_id', STORE_ID).order('created_at', { ascending: false });
                 if (error) throw error;
+                products.forEach(p => { p.name = __safe(p.name); p.description = __safe(p.description); p.category = __safe(p.category); p.media_url = __safeUrl(p.media_url); if (Array.isArray(p.media_gallery)) p.media_gallery = p.media_gallery.map(m => ({ ...m, url: __safeUrl(m && m.url) })); });
                 productsData = products; renderCategories(productsData); applyFilters(); renderAdminInventory(productsData); updateFavUI();
             } catch (err) { console.error(err); }
         }
@@ -734,7 +789,7 @@
             btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الإرسال...';
             try {
                 let created = now;
-                const { data: rpcData, error } = await db.rpc('create_order', { p_name: name, p_phone: phone, p_notes: notes || null, p_items: items, p_total: total });
+                const { data: rpcData, error } = await db.rpc('create_order', { p_store_id: STORE_ID, p_name: name, p_phone: phone, p_notes: notes || null, p_items: items, p_total: total });
                 if (error) console.warn('order save:', error.message);
                 const row = Array.isArray(rpcData) ? rpcData[0] : rpcData;
                 if (row && row.o_number) { number = '#' + row.o_number; if (row.o_created) created = new Date(row.o_created); }
@@ -779,6 +834,8 @@
                 Swal.fire('خطأ', 'البريد الإلكتروني أو كلمة المرور غير صحيحة', 'error');
                 return;
             }
+            const { data: own } = await db.rpc('owns_store', { sid: STORE_ID });
+            if (!own) { try { await db.auth.signOut(); } catch (_) {} Swal.fire('غير مصرّح', 'هذا الحساب لا يملك هذا المتجر', 'error'); return; }
             Swal.close();
             isAdmin = true;
             document.getElementById('publicView').classList.add('hidden');
@@ -794,12 +851,12 @@
             try {
                 const files = document.getElementById('pMedia').files; let uploadedMedia = [];
                 for (let i = 0; i < files.length; i++) {
-                    const file = files[i]; const fileName = `${Date.now()}_${i}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                    const file = files[i]; const fileName = `${STORE_ID}/${Date.now()}_${i}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
                     await db.storage.from('product-media').upload(fileName, file);
                     const { data: urlData } = db.storage.from('product-media').getPublicUrl(fileName);
                     uploadedMedia.push({ url: urlData.publicUrl, type: file.type.startsWith('video') ? 'video' : 'image' });
                 }
-                await db.from('products').insert([{ name: document.getElementById('pName').value, description: document.getElementById('pDesc').value, category: document.getElementById('pCategory').value, price: parseFloat(document.getElementById('pPrice').value), quantity: parseInt(document.getElementById('pQty').value), discount_percentage: 0, media_url: uploadedMedia[0].url, media_type: uploadedMedia[0].type, media_gallery: uploadedMedia }]);
+                await db.from('products').insert([{ store_id: STORE_ID, name: document.getElementById('pName').value, description: document.getElementById('pDesc').value, category: document.getElementById('pCategory').value, price: parseFloat(document.getElementById('pPrice').value), quantity: parseInt(document.getElementById('pQty').value), discount_percentage: 0, media_url: uploadedMedia[0].url, media_type: uploadedMedia[0].type, media_gallery: uploadedMedia }]);
                 Swal.fire('نجاح', 'تمت إضافة المنتج بنجاح', 'success'); document.getElementById('addProductForm').reset(); loadProducts();
             } catch(e) { Swal.fire('خطأ', 'تأكد من إعداد قاعدة البيانات بشكل صحيح\n' + e.message, 'error'); } finally { btn.disabled = false; btn.innerHTML = "إضافة المنتج"; }
         });
@@ -850,10 +907,10 @@
             }
         }
 
-        window.applyGlobalDiscount = async function() { const { value: percent } = await Swal.fire({ title: 'تخفيض شامل', input: 'number', showCancelButton: true }); if(percent !== undefined && percent !== '') { await db.from('products').update({ discount_percentage: parseInt(percent) }).gte('price', 0); Swal.fire('نجاح', 'تم التطبيق', 'success'); loadProducts(); } }
+        window.applyGlobalDiscount = async function() { const { value: percent } = await Swal.fire({ title: 'تخفيض شامل', input: 'number', showCancelButton: true }); if(percent !== undefined && percent !== '') { await db.from('products').update({ discount_percentage: parseInt(percent) }).eq('store_id', STORE_ID).gte('price', 0); Swal.fire('نجاح', 'تم التطبيق', 'success'); loadProducts(); } }
         
         window.loadOrders = async function() {
-            const { data: orders, error } = await db.from('orders').select('*').order('created_at', { ascending: false });
+            const { data: orders, error } = await db.from('orders').select('*').eq('store_id', STORE_ID).order('created_at', { ascending: false });
             const tbody = document.getElementById('ordersTableBody'); tbody.innerHTML = '';
             if (error) { tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-red-500">${error.message}</td></tr>`; return; }
             if (!orders.length) { tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-gray-400 font-bold">لا توجد طلبات بعد</td></tr>'; return; }
@@ -863,7 +920,7 @@
                 const actions = st === 'جديد'
                     ? `<button onclick="verifyOrder('${o.id}', '${encodeURIComponent(JSON.stringify(o.items))}')" class="bg-teal-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">تأكيد وخصم</button> <button onclick="cancelOrder('${o.id}')" class="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold">إلغاء</button>`
                     : '';
-                tbody.innerHTML += `<tr class="border-b text-xs align-top"><td class="p-3"><b>#${o.order_number || '------'}</b><br><span class="text-gray-400">${new Date(o.created_at).toLocaleDateString('ar-u-nu-latn')+' '+new Date(o.created_at).toLocaleTimeString('ar-u-nu-latn',{hour:'2-digit',minute:'2-digit',hour12:false})}</span></td><td class="p-3 font-bold">${o.customer_name}<br><a class="text-green-600" dir="ltr" href="https://wa.me/${String(o.customer_phone).replace(/\D/g,'')}" target="_blank">${o.customer_phone}</a>${o.notes ? `<br><span class="text-gray-400 font-normal">${o.notes}</span>` : ''}</td><td class="p-3">${(o.items||[]).map(i => `${i.name} (×${i.qty})`).join('<br>')}</td><td class="p-3 font-black">${o.total_amount} MRU</td><td class="p-3 text-center"><span class="inline-block px-2 py-1 rounded-full font-bold mb-2 ${badge[st] || ''}">${st}</span><br>${actions}</td></tr>`;
+                tbody.innerHTML += `<tr class="border-b text-xs align-top"><td class="p-3"><b>#${o.order_number || '------'}</b><br><span class="text-gray-400">${new Date(o.created_at).toLocaleDateString('ar-u-nu-latn')+' '+new Date(o.created_at).toLocaleTimeString('ar-u-nu-latn',{hour:'2-digit',minute:'2-digit',hour12:false})}</span></td><td class="p-3 font-bold">${__safe(o.customer_name)}<br><a class="text-green-600" dir="ltr" href="https://wa.me/${String(o.customer_phone).replace(/\D/g,'')}" target="_blank">${o.customer_phone}</a>${o.notes ? `<br><span class="text-gray-400 font-normal">${__safe(o.notes)}</span>` : ''}</td><td class="p-3">${(o.items||[]).map(i => `${__safe(i.name)} (×${Number(i.qty)||0})`).join('<br>')}</td><td class="p-3 font-black">${o.total_amount} MRU</td><td class="p-3 text-center"><span class="inline-block px-2 py-1 rounded-full font-bold mb-2 ${badge[st] || ''}">${st}</span><br>${actions}</td></tr>`;
             });
         }
         window.cancelOrder = async function(id) {
@@ -876,31 +933,35 @@
         
 
         // ============ إعدادات المتجر من قاعدة البيانات (تُحفظ لكل المستخدمين) ============
-        // ملاحظة: جدول store_settings بصف واحد id=1 والأعمدة:
-        // جدول store_settings بصف واحد id=1: whatsapp_number, store_name, location_lat, location_lng, location_label, map_url
+        // ملاحظة: إعدادات كل متجر محفوظة في جدول stores
+        // جدول stores: صف لكل متجر (slug, store_name, whatsapp_number, location_*, map_url, logo_url)
         // RLS: قراءة للجميع، كتابة للمشرف الموثّق فقط.
 
         async function loadStoreSettings() {
             try {
-                const { data, error } = await db.from('store_settings').select('*').eq('id', 1).maybeSingle();
-                if (error) { console.warn('store_settings load:', error.message); return; }
-                if (!data) return;
-                if (data.whatsapp_number) STORE_CONFIG.whatsappNumber = data.whatsapp_number;
+                const { data, error } = await db.from('stores').select('id,slug,store_name,whatsapp_number,location_lat,location_lng,location_label,map_url,logo_url').eq('slug', STORE_SLUG).eq('is_active', true).maybeSingle();
+                if (error) { console.warn('stores load:', error.message); showPlatformHome('error'); return false; }
+                if (!data) { showPlatformHome('notfound'); return false; }
+                STORE_ID = data.id;
+                if (data.whatsapp_number) STORE_CONFIG.whatsappNumber = String(data.whatsapp_number).replace(/[^0-9]/g, '');
                 if (data.store_name) {
+                    data.store_name = __safe(data.store_name);
                     STORE_CONFIG.storeName = data.store_name;
                     document.getElementById('pageTitle').innerText = data.store_name;
                     document.getElementById('navStoreName').innerText = data.store_name;
                     document.getElementById('bannerStoreName').innerText = data.store_name;
                 }
+                data.logo_url = __safeUrl(data.logo_url);
                 STORE_CONFIG.logoUrl = data.logo_url || '';
                 try { data.logo_url ? localStorage.setItem(STORAGE_LOGO_KEY, data.logo_url) : localStorage.removeItem(STORAGE_LOGO_KEY); } catch (_) {}
                 applyLogo(STORE_CONFIG.logoUrl);
                 STORE_CONFIG.locationLat = data.location_lat || null;
                 STORE_CONFIG.locationLng = data.location_lng || null;
-                STORE_CONFIG.locationLabel = data.location_label || '';
-                STORE_CONFIG.mapUrl = data.map_url || '';
+                STORE_CONFIG.locationLabel = __safe(data.location_label || '');
+                STORE_CONFIG.mapUrl = __safeUrl(data.map_url);
                 refreshContactUI();
-            } catch(e) { console.warn(e); }
+                return true;
+            } catch(e) { console.warn(e); return false; }
         }
 
         function refreshContactUI() {
@@ -942,7 +1003,13 @@
             } catch(e) { console.warn('refreshContactUI', e); }
         }
 
+        function storeLink() { return location.origin + location.pathname + '?store=' + STORE_SLUG; }
+        window.copyStoreLink = function() {
+            const v = storeLink();
+            (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(() => Swal.fire({toast:true, position:'top', icon:'success', title:'تم نسخ الرابط', showConfirmButton:false, timer:1500})).catch(() => { const i = document.getElementById('storeLinkInput'); i.select(); document.execCommand('copy'); });
+        }
         function populateSettingsForm() {
+            const __li = document.getElementById('storeLinkInput'); if (__li) __li.value = storeLink();
             renderLogoPreview();
             document.getElementById('settingsWhatsapp').value = STORE_CONFIG.whatsappNumber || '';
             document.getElementById('settingsStoreName').value = STORE_CONFIG.storeName || '';
@@ -965,9 +1032,9 @@
         }
 
         async function upsertSettings(patch) {
-            const payload = Object.assign({ id: 1 }, patch);
-            const { error } = await db.from('store_settings').upsert(payload, { onConflict: 'id' });
+            const { data, error } = await db.from('stores').update(patch).eq('id', STORE_ID).select('id');
             if (error) throw error;
+            if (!data || !data.length) throw new Error('لا تملك صلاحية تعديل هذا المتجر');
         }
 
         window.saveWhatsappSetting = async function() {
@@ -1152,7 +1219,7 @@
                     const lat = STORE_CONFIG.locationLat, lng = STORE_CONFIG.locationLng;
                     const mapsLink = (STORE_CONFIG.mapUrl && STORE_CONFIG.mapUrl.trim()) ? STORE_CONFIG.mapUrl.trim() : ((lat && lng) ? `https://maps.google.com/?q=${lat},${lng}` : '');
                     let msg = `✅ *تأكيد الطلب — ${STORE_CONFIG.storeName}*\n${sep}\n`;
-                    msg += `مرحبًا *${orderRow.customer_name}* 👋\nيسعدنا إبلاغك بأنه تم تأكيد طلبك وهو الآن قيد التجهيز.\n${sep}\n`;
+                    msg += `مرحبًا *${__safe(orderRow.customer_name)}* 👋\nيسعدنا إبلاغك بأنه تم تأكيد طلبك وهو الآن قيد التجهيز.\n${sep}\n`;
                     msg += `🧾 *رقم الطلب:* #${orderRow.order_number || '------'}\n📦 *المنتجات:*\n`;
                     (orderRow.items || items).forEach((i, n) => { msg += `${n + 1}. ${i.name} (×${i.qty})\n`; });
                     msg += `${sep}\n💰 *الإجمالي:* ${orderRow.total_amount} MRU\n${sep}\n`;
@@ -1166,7 +1233,7 @@
         }
 
         // ============ شعار المتجر ============
-        const STORAGE_LOGO_KEY = "store_logo_url";
+        const STORAGE_LOGO_KEY = "store_logo_" + (STORE_SLUG || "platform");
         function applyLogo(url) {
             const targets = [['navLogoBox', 40, 'w-9 h-9 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-md'], ['footerLogoBox', 44, 'w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-md']];
             targets.forEach(([id, h, dflt]) => {
@@ -1213,7 +1280,7 @@
             btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الرفع...';
             try {
                 const blob = await __resizeLogo(f);
-                const path = `logo_${Date.now()}.png`;
+                const path = `${STORE_ID}/logo_${Date.now()}.png`;
                 const up = await db.storage.from('store-assets').upload(path, blob, { contentType: 'image/png', upsert: true });
                 if (up.error) throw up.error;
                 const { data: u } = db.storage.from('store-assets').getPublicUrl(path);
@@ -1233,7 +1300,159 @@
         }
         try { const cachedLogo = localStorage.getItem(STORAGE_LOGO_KEY); if (cachedLogo) { STORE_CONFIG.logoUrl = cachedLogo; applyLogo(cachedLogo); } } catch (_) {}
 
-        loadStoreSettings().then(loadProducts);
+        // ============ منصة المتاجر (الصفحة الرئيسية، الإنشاء، الدخول) ============
+        const __RESERVED = ['admin','api','www','store','stores','platform','login','app','test','null','undefined'];
+        const __esc = v => __safe(v);
+        function showPlatformHome(state) {
+            document.getElementById('platformHome').classList.remove('hidden');
+            const m = document.getElementById('platformMsg');
+            if (state === 'notfound') m.textContent = 'لم نعثر على هذا المتجر أو أنه غير متاح حاليًا. تصفّح المتاجر المتاحة أدناه.';
+            if (state === 'error') m.textContent = 'تعذّر تحميل المتجر الآن، حاول مرة أخرى بعد قليل.';
+            loadPlatformStores();
+        }
+        async function loadPlatformStores() {
+            const box = document.getElementById('platformStores');
+            const { data, error } = await db.from('stores').select('slug,store_name,logo_url').eq('is_active', true).eq('is_listed', true).order('created_at', { ascending: false }).limit(60);
+            if (error || !data || !data.length) { box.innerHTML = '<p class="col-span-full text-center text-gray-400 font-bold py-10">لا توجد متاجر متاحة حاليًا.</p>'; return; }
+            box.innerHTML = data.map(st => {
+                const logo = __safeUrl(st.logo_url);
+                return `<a href="?store=${encodeURIComponent(st.slug)}" class="product-card bg-white rounded-2xl p-5 flex flex-col items-center gap-3 text-center transition"><div class="w-20 h-20 rounded-2xl bg-teal-50 flex items-center justify-center overflow-hidden">${logo ? `<img src="${logo}" alt="" style="width:100%;height:100%;object-fit:contain">` : '<i class="fa-solid fa-store text-teal-600 text-2xl"></i>'}</div><b class="text-gray-800 text-sm">${__esc(st.store_name || st.slug)}</b><span class="text-xs font-bold text-teal-700">زيارة المتجر <i class="fa-solid fa-arrow-left"></i></span></a>`;
+            }).join('');
+        }
+        async function __ownedStore(userId) {
+            const { data } = await db.from('stores').select('slug').eq('owner_id', userId).maybeSingle();
+            return data ? data.slug : null;
+        }
+        window.platformLogin = async function() {
+            const { value: v } = await Swal.fire({
+                title: 'تسجيل الدخول', confirmButtonText: 'دخول', showCancelButton: true, cancelButtonText: 'إلغاء',
+                html: '<input id="pl-email" type="email" class="swal2-input" placeholder="البريد الإلكتروني" dir="ltr"><input id="pl-pass" type="password" class="swal2-input" placeholder="كلمة المرور" dir="ltr">',
+                preConfirm: () => { const email = document.getElementById('pl-email').value.trim(), password = document.getElementById('pl-pass').value; if (!email || !password) { Swal.showValidationMessage('أدخل البريد وكلمة المرور'); return false; } return { email, password }; }
+            });
+            if (!v) return;
+            Swal.fire({ title: 'جاري التحقق...', didOpen: () => Swal.showLoading(), allowOutsideClick: false });
+            const { data, error } = await db.auth.signInWithPassword(v);
+            if (error || !data || !data.user) return Swal.fire('خطأ', 'البريد أو كلمة المرور غير صحيحة', 'error');
+            if (await __isSuper()) { Swal.close(); return openSuperAdmin(); }
+            const slug = await __ownedStore(data.user.id);
+            if (slug) { location.href = `?store=${encodeURIComponent(slug)}&admin=1`; return; }
+            try { await db.auth.signOut(); } catch (_) {}
+            Swal.fire('لا يوجد متجر', 'هذا الحساب غير مرتبط بأي متجر. تواصل مع مشرف المنصة.', 'info');
+        }
+        async function __isSuper() { try { const { data } = await db.rpc('is_platform_admin'); return data === true; } catch (_) { return false; } }
+        async function __checkSuperBtn() {
+            try {
+                const { data: sess } = await db.auth.getSession(); if (!(sess && sess.session)) return;
+                if (!(await __isSuper())) return;
+                const b = document.getElementById('platformLoginBtn');
+                b.innerHTML = '<i class="fa-solid fa-crown ml-1"></i> لوحة المشرف الرئيسي'; b.onclick = openSuperAdmin;
+            } catch (_) {}
+        }
+
+        // ---------- لوحة المشرف الرئيسي ----------
+        window.openSuperAdmin = function() { document.getElementById('superAdmin').classList.remove('hidden'); loadSuperStores(); }
+        window.closeSuperAdmin = function() { document.getElementById('superAdmin').classList.add('hidden'); loadPlatformStores(); }
+        window.superLogout = async function() { try { await db.auth.signOut(); } catch (_) {} location.href = location.pathname; }
+        async function loadSuperStores() {
+            const box = document.getElementById('superStores');
+            box.innerHTML = '<p class="col-span-full text-center text-gray-400 py-10"><i class="fa-solid fa-spinner fa-spin"></i></p>';
+            const { data, error } = await db.rpc('admin_list_stores');
+            if (error) { box.innerHTML = `<p class="col-span-full text-center text-red-500 font-bold py-10">${__safe(error.message)}</p>`; return; }
+            document.getElementById('superCount').textContent = `(${data.length})`;
+            if (!data.length) { box.innerHTML = '<p class="col-span-full text-center text-gray-400 font-bold py-10">لا توجد متاجر بعد</p>'; return; }
+            box.innerHTML = data.map(st => `
+                <div class="bg-white rounded-2xl p-5 shadow-sm border ${st.is_active ? 'border-gray-100' : 'border-red-200 bg-red-50/40'}">
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <div class="min-w-0"><h4 class="font-black text-gray-800 truncate">${__safe(st.store_name)}</h4><p class="text-xs text-gray-400" dir="ltr">?store=${__safe(st.slug)}</p></div>
+                        <div class="flex gap-1 shrink-0"><span class="text-[11px] font-bold px-2 py-1 rounded-full ${st.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}">${st.is_active ? 'نشط' : 'موقوف'}</span>${st.is_listed ? '' : '<span class="text-[11px] font-bold px-2 py-1 rounded-full bg-gray-100 text-gray-500">مخفي</span>'}</div>
+                    </div>
+                    <div class="text-xs text-gray-500 space-y-1 mb-4"><div><i class="fa-solid fa-user ml-1"></i> <span dir="ltr">${__safe(st.owner_email || 'بدون مالك')}</span></div><div><i class="fa-brands fa-whatsapp ml-1"></i> <span dir="ltr">${__safe(st.whatsapp_number || '—')}</span></div><div>${st.products_count} منتج · ${st.orders_count} طلب</div></div>
+                    <div class="grid grid-cols-3 gap-2 text-xs font-bold">
+                        <a href="?store=${encodeURIComponent(st.slug)}&admin=1" class="bg-teal-600 text-white py-2 rounded-lg text-center">إدارة</a>
+                        <button onclick="superToggle('${st.id}', ${!st.is_active}, null)" class="bg-amber-50 text-amber-700 py-2 rounded-lg">${st.is_active ? 'إيقاف' : 'تفعيل'}</button>
+                        <button onclick="superToggle('${st.id}', null, ${!st.is_listed})" class="bg-gray-100 text-gray-700 py-2 rounded-lg">${st.is_listed ? 'إخفاء' : 'إظهار'}</button>
+                        <button onclick="superSetOwner('${st.id}')" class="bg-blue-50 text-blue-700 py-2 rounded-lg">المالك</button>
+                        <button onclick="superCopy('${__safe(st.slug)}')" class="bg-gray-100 text-gray-700 py-2 rounded-lg">نسخ الرابط</button>
+                        <button onclick="superDelete('${st.id}', '${__safe(st.store_name)}')" class="bg-red-50 text-red-600 py-2 rounded-lg">حذف</button>
+                    </div>
+                </div>`).join('');
+        }
+        window.superCopy = function(slug) {
+            const v = location.origin + location.pathname + '?store=' + slug;
+            (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(() => Swal.fire({toast:true, position:'top', icon:'success', title:'تم نسخ الرابط', showConfirmButton:false, timer:1500})).catch(() => Swal.fire('الرابط', v, 'info'));
+        }
+        window.superToggle = async function(id, active, listed) {
+            const { error } = await db.rpc('admin_set_store_flags', { p_store: id, p_active: active, p_listed: listed });
+            if (error) return Swal.fire('خطأ', error.message, 'error');
+            loadSuperStores();
+        }
+        window.superSetOwner = async function(id) {
+            const { value: email } = await Swal.fire({ title: 'تغيير مالك المتجر', input: 'email', inputPlaceholder: 'بريد المالك الجديد (حسابه موجود مسبقًا)', showCancelButton: true, confirmButtonText: 'حفظ', cancelButtonText: 'إلغاء' });
+            if (!email) return;
+            const { error } = await db.rpc('admin_set_store_owner', { p_store: id, p_owner_email: email.trim() });
+            if (error) return Swal.fire('خطأ', /owner_not_found/.test(error.message) ? 'لا يوجد حساب بهذا البريد' : /already_has_store/.test(error.message) ? 'هذا الحساب يملك متجرًا آخر' : error.message, 'error');
+            Swal.fire({toast:true, position:'top', icon:'success', title:'تم تغيير المالك', showConfirmButton:false, timer:1500});
+            loadSuperStores();
+        }
+        window.superDelete = async function(id, name) {
+            const c = await Swal.fire({ title: `حذف «${name}»؟`, text: 'سيُحذف المتجر وكل منتجاته وطلباته نهائيًا ولا يمكن التراجع.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc2626', confirmButtonText: 'نعم، احذف', cancelButtonText: 'إلغاء' });
+            if (!c.isConfirmed) return;
+            const { error } = await db.rpc('admin_delete_store', { p_store: id });
+            if (error) return Swal.fire('خطأ', error.message, 'error');
+            loadSuperStores();
+        }
+        window.superCreateStore = async function() {
+            const { value: v } = await Swal.fire({
+                title: 'إنشاء متجر جديد', confirmButtonText: 'إنشاء', showCancelButton: true, cancelButtonText: 'إلغاء',
+                html: `<input id="cs-name" class="swal2-input" placeholder="اسم المتجر">
+                       <input id="cs-slug" class="swal2-input" placeholder="رابط المتجر: my-store" dir="ltr">
+                       <input id="cs-wa" class="swal2-input" placeholder="واتساب مع المفتاح: 22241234567" dir="ltr" inputmode="numeric">
+                       <input id="cs-email" type="email" class="swal2-input" placeholder="بريد مالك المتجر" dir="ltr">
+                       <input id="cs-pass" type="text" class="swal2-input" placeholder="كلمة مرور المالك (اتركها فارغة إن كان حسابه موجودًا)" dir="ltr">`,
+                preConfirm: () => {
+                    const g = id => document.getElementById(id).value;
+                    const r = { name: g('cs-name').trim(), slug: g('cs-slug').trim().toLowerCase(), wa: g('cs-wa').replace(/\D/g, ''), email: g('cs-email').trim(), password: g('cs-pass') };
+                    if (!r.name) { Swal.showValidationMessage('أدخل اسم المتجر'); return false; }
+                    if (!/^[a-z0-9](?:[a-z0-9-]{1,28})[a-z0-9]$/.test(r.slug) || __RESERVED.includes(r.slug)) { Swal.showValidationMessage('الرابط: 3–30 حرفًا إنجليزيًا صغيرًا أو أرقامًا أو شرطة'); return false; }
+                    if (r.wa.length < 8) { Swal.showValidationMessage('أدخل رقم واتساب صحيحًا'); return false; }
+                    if (!r.email) { Swal.showValidationMessage('أدخل بريد المالك'); return false; }
+                    if (r.password && r.password.length < 6) { Swal.showValidationMessage('كلمة المرور 6 أحرف على الأقل'); return false; }
+                    return r;
+                }
+            });
+            if (!v) return;
+            Swal.fire({ title: 'جاري إنشاء المتجر...', didOpen: () => Swal.showLoading(), allowOutsideClick: false });
+            if (v.password) {
+                // عميل مؤقت حتى لا تتأثر جلسة المشرف الحالية
+                const tmp = window.supabase.createClient(STORE_CONFIG.supabaseUrl, STORE_CONFIG.supabaseAnonKey, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: 'tmp-signup' } });
+                const { error: se } = await tmp.auth.signUp({ email: v.email, password: v.password });
+                if (se && !/already/i.test(se.message)) return Swal.fire('تعذّر إنشاء حساب المالك', se.message, 'error');
+            }
+            const { data: slug, error } = await db.rpc('admin_create_store', { p_name: v.name, p_slug: v.slug, p_whatsapp: v.wa, p_owner_email: v.email });
+            if (error) {
+                const m = error.message;
+                return Swal.fire('تعذّر الإنشاء', /slug_taken/.test(m) ? 'هذا الرابط مستخدم، اختر رابطًا آخر' : /owner_not_found/.test(m) ? 'لا يوجد حساب بهذا البريد. أدخل كلمة مرور لإنشائه، أو أكّد بريده إن كان تأكيد البريد مفعّلًا.' : /already_has_store/.test(m) ? 'هذا الحساب يملك متجرًا بالفعل' : m, 'error');
+            }
+            await Swal.fire('تم إنشاء المتجر', `الرابط: ?store=${slug}\nسلّم المالك بريده وكلمة مروره.`, 'success');
+            loadSuperStores();
+        }
+                // دخول تلقائي للوحة الإدارة بعد الإنشاء/الدخول من الصفحة الرئيسية
+        async function __autoAdmin() {
+            if (__qs.get('admin') !== '1') return;
+            try {
+                const { data: sess } = await db.auth.getSession();
+                const u = sess && sess.session && sess.session.user; if (!u) return;
+                const { data: own } = await db.rpc('owns_store', { sid: STORE_ID });
+                if (!own) return;
+                isAdmin = true;
+                document.getElementById('publicView').classList.add('hidden');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                document.getElementById('adminBadge').classList.remove('hidden');
+            } catch (_) {}
+        }
+
+        if (!STORE_SLUG) { showPlatformHome(); __checkSuperBtn(); }
+        else { loadStoreSettings().then(ok => { if (ok) { loadProducts(); __autoAdmin(); } }); }
     </script>
     <script>(function(){document.addEventListener('contextmenu', e=>e.preventDefault());document.onkeydown=function(e){if(e.keyCode==123)return false;if(e.ctrlKey&&e.shiftKey&&(e.keyCode=='I'.charCodeAt(0)||e.keyCode=='J'.charCodeAt(0)||e.keyCode=='C'.charCodeAt(0)))return false;if(e.ctrlKey&&e.keyCode=='U'.charCodeAt(0))return false;}})();</script>
 
