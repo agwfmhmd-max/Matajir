@@ -518,7 +518,7 @@
             </div>
             <div class="flex items-center gap-2">
                 <button id="platformLanguageToggle" type="button" onclick="toggleLanguage()" class="px-3 py-2 rounded-xl border border-teal-100 bg-white text-teal-800 font-black text-xs shadow-sm hover:bg-teal-50 transition" title="Français">FR</button>
-                <button id="platformLoginBtn" onclick="platformLogin()" class="shrink-0 text-sm font-bold text-teal-900 bg-white border border-teal-100 px-4 py-2.5 rounded-xl shadow-sm hover:bg-teal-50 transition"><i class="fa-solid fa-right-to-bracket ml-1"></i> تسجيل الدخول</button>
+                <button id="platformLoginBtn" onclick="platformLogin()" class="hidden shrink-0 text-sm font-bold text-teal-900 bg-white border border-teal-100 px-4 py-2.5 rounded-xl shadow-sm hover:bg-teal-50 transition"><i class="fa-solid fa-right-to-bracket ml-1"></i> تسجيل الدخول</button>
         </header>
 
         <main class="max-w-7xl mx-auto px-5 pb-16">
@@ -655,6 +655,8 @@
             locationLat: null,
             locationLng: null,
             locationLabel: "",
+            subscriptionExpiresAt: null,
+            subscriptionPermanent: true,
 
             // 3. ربط قاعدة البيانات (Supabase) — قاعدة واحدة لكل المتاجر
             supabaseUrl: 'https://ydtqjxihhuuwkhsqnodh.supabase.co',
@@ -1185,6 +1187,13 @@
                 if (error) { console.warn('stores load:', error.message); showPlatformHome('error'); return false; }
                 if (!data) { showPlatformHome('notfound'); return false; }
                 STORE_ID = data.id;
+                STORE_CONFIG.subscriptionExpiresAt = data.subscription_expires_at || null;
+                STORE_CONFIG.subscriptionPermanent = data.subscription_permanent !== false;
+                const __subscriptionExpired = STORE_CONFIG.subscriptionPermanent !== true && (!STORE_CONFIG.subscriptionExpiresAt || new Date(STORE_CONFIG.subscriptionExpiresAt).getTime() < Date.now());
+                if (__subscriptionExpired) {
+                    showPlatformHome('expired');
+                    return false;
+                }
                 if (data.whatsapp_number) STORE_CONFIG.whatsappNumber = String(data.whatsapp_number).replace(/[^0-9]/g, '');
                 if (data.store_name) {
                     data.store_name = __safe(data.store_name);
@@ -1545,7 +1554,23 @@
             const m = document.getElementById('platformMsg');
             if (state === 'notfound') m.textContent = 'لم نعثر على هذا المتجر أو أنه غير متاح حاليًا. يمكنك طلب إنشاء متجر خاص بك من النموذج أدناه.';
             if (state === 'error') m.textContent = 'تعذّر تحميل المتجر الآن. يمكنك طلب إنشاء متجر خاص بك من النموذج أدناه.';
+            if (state === 'expired') m.textContent = 'انتهى اشتراك هذا المتجر. يرجى التواصل مع إدارة منصة متاجر لتجديد الاشتراك.';
         }
+        // زر دخول المشرف الرئيسي مخفي افتراضيًا. يظهر فقط بعد نقر شعار متاجر عدة مرات متتالية.
+        let __platformLogoClicks = 0, __platformLogoClickTimer = null;
+        document.getElementById('platformLogoHeader')?.addEventListener('click', () => {
+            __platformLogoClicks++;
+            clearTimeout(__platformLogoClickTimer);
+            __platformLogoClickTimer = setTimeout(() => { __platformLogoClicks = 0; }, 900);
+            if (__platformLogoClicks < 5) return;
+            __platformLogoClicks = 0;
+            const b = document.getElementById('platformLoginBtn');
+            if (!b) return;
+            b.classList.remove('hidden');
+            b.innerHTML = '<i class="fa-solid fa-shield-halved ml-1"></i> دخول المشرف الرئيسي';
+            Swal.fire({ toast:true, position:'top', icon:'info', title:'تم إظهار دخول المشرف الرئيسي', showConfirmButton:false, timer:1800 });
+        });
+
         async function __ownedStore(userId) {
             const { data } = await db.from('stores').select('slug').eq('owner_id', userId).maybeSingle();
             return data ? data.slug : null;
@@ -1604,6 +1629,10 @@
         window.openSuperAdmin = function() { document.getElementById('superAdmin').classList.remove('hidden'); loadSuperStores(); }
         window.closeSuperAdmin = function() { document.getElementById('superAdmin').classList.add('hidden'); }
         window.superLogout = async function() { try { await db.auth.signOut(); } catch (_) {} location.href = BASE_PATH; }
+        function __subscriptionIsValid(st) {
+            return st.subscription_permanent === true || (st.subscription_expires_at && new Date(st.subscription_expires_at).getTime() >= Date.now());
+        }
+
         async function loadSuperStores() {
             const box = document.getElementById('superStores');
             box.innerHTML = '<p class="col-span-full text-center text-gray-400 py-10"><i class="fa-solid fa-spinner fa-spin"></i></p>';
@@ -1612,18 +1641,19 @@
             document.getElementById('superCount').textContent = `(${data.length})`;
             if (!data.length) { box.innerHTML = '<p class="col-span-full text-center text-gray-400 font-bold py-10">لا توجد متاجر بعد</p>'; return; }
             box.innerHTML = data.map(st => `
-                <div class="bg-white rounded-2xl p-5 shadow-sm border ${st.is_active ? 'border-gray-100' : 'border-red-200 bg-red-50/40'}">
+                <div class="bg-white rounded-2xl p-5 shadow-sm border ${st.is_active && __subscriptionIsValid(st) ? 'border-gray-100' : 'border-red-200 bg-red-50/40'}">
                     <div class="flex items-start justify-between gap-3 mb-3">
                         <div class="min-w-0"><h4 class="font-black text-gray-800 truncate">${__safe(st.store_name)}</h4><p class="text-xs text-gray-400" dir="ltr">${__safe(BASE_PATH + st.slug)}</p></div>
-                        <div class="flex gap-1 shrink-0"><span class="text-[11px] font-bold px-2 py-1 rounded-full ${st.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}">${st.is_active ? 'نشط' : 'موقوف'}</span></div>
+                        <div class="flex gap-1 shrink-0"><span class="text-[11px] font-bold px-2 py-1 rounded-full ${st.is_active && __subscriptionIsValid(st) ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}">${!st.is_active ? 'موقوف' : (__subscriptionIsValid(st) ? 'نشط' : 'منتهي الاشتراك')}</span></div>
                     </div>
-                    <div class="text-xs text-gray-500 space-y-1 mb-4"><div><i class="fa-solid fa-user ml-1"></i> <span dir="ltr">${__safe(st.owner_email || 'بدون مالك')}</span></div><div><i class="fa-brands fa-whatsapp ml-1"></i> <span dir="ltr">${__safe(st.whatsapp_number || '—')}</span></div><div>${st.products_count} منتج · ${st.orders_count} طلب</div></div>
+                    <div class="text-xs text-gray-500 space-y-1 mb-4"><div><i class="fa-solid fa-user ml-1"></i> <span dir="ltr">${__safe(st.owner_email || 'بدون مالك')}</span></div><div><i class="fa-brands fa-whatsapp ml-1"></i> <span dir="ltr">${__safe(st.whatsapp_number || '—')}</span></div><div>${st.products_count} منتج · ${st.orders_count} طلب</div><div class="mt-1 font-bold ${st.subscription_permanent ? 'text-emerald-600' : (st.subscription_expires_at && new Date(st.subscription_expires_at).getTime() >= Date.now() ? 'text-violet-600' : 'text-red-600')}">${st.subscription_permanent ? 'اشتراك نهائي' : (st.subscription_expires_at && new Date(st.subscription_expires_at).getTime() >= Date.now() ? 'ينتهي: ' + new Date(st.subscription_expires_at).toLocaleDateString('ar-MR') : 'اشتراك منتهٍ')}</div></div>
                     <div class="grid grid-cols-3 gap-2 text-xs font-bold">
                         <a href="${__storeUrl(encodeURIComponent(st.slug))}?admin=1" class="bg-teal-600 text-white py-2 rounded-lg text-center">إدارة</a>
                         <button onclick="superToggle('${st.id}', ${!st.is_active}, null)" class="bg-amber-50 text-amber-700 py-2 rounded-lg">${st.is_active ? 'إيقاف' : 'تفعيل'}</button>
                         <button onclick="superSetOwner('${st.id}')" class="bg-blue-50 text-blue-700 py-2 rounded-lg">المالك</button>
                         <button onclick="superCopy('${__safe(st.slug)}')" class="bg-gray-100 text-gray-700 py-2 rounded-lg">نسخ الرابط</button>
                         <button onclick="superSetStoreName('${st.id}', '${__safe(st.store_name)}')" class="bg-cyan-50 text-cyan-700 py-2 rounded-lg">اسم المتجر</button>
+                        <button onclick="superSetSubscription('${st.id}', ${st.subscription_permanent ? 'true' : 'false'}, ${st.subscription_expires_at ? `'${__safe(st.subscription_expires_at)}'` : 'null'})" class="bg-violet-50 text-violet-700 py-2 rounded-lg">الاشتراك</button>
                         <button onclick="superDelete('${st.id}', '${__safe(st.store_name)}')" class="bg-red-50 text-red-600 py-2 rounded-lg">حذف</button>
                     </div>
                 </div>`).join('');
@@ -1664,6 +1694,35 @@
             const { error } = await db.rpc('admin_set_store_name', { p_store: id, p_name: name.trim() });
             if (error) return Swal.fire('خطأ', error.message, 'error');
             Swal.fire({toast:true, position:'top', icon:'success', title:'تم تغيير اسم المتجر', showConfirmButton:false, timer:1500});
+            loadSuperStores();
+        }
+        window.superSetSubscription = async function(id, permanent, expiresAt) {
+            const current = permanent ? 'permanent' : (expiresAt ? new Date(expiresAt).toISOString().slice(0,10) : 'none');
+            const { value: mode } = await Swal.fire({
+                title: 'اشتراك المتجر',
+                input: 'radio',
+                inputOptions: { permanent: 'اشتراك نهائي — لا ينتهي', date: 'اشتراك بتاريخ انتهاء', none: 'إيقاف الاشتراك — المتجر يتوقف' },
+                inputValue: current === 'permanent' ? 'permanent' : (current === 'none' ? 'none' : 'date'),
+                showCancelButton: true, confirmButtonText: 'التالي', cancelButtonText: 'إلغاء',
+                inputValidator: v => !v ? 'اختر نوع الاشتراك' : undefined
+            });
+            if (!mode) return;
+            let permanentValue = mode === 'permanent', expiresValue = null;
+            if (mode === 'date') {
+                const { value: date } = await Swal.fire({
+                    title: 'تاريخ انتهاء الاشتراك', input: 'date',
+                    inputValue: current !== 'permanent' && current !== 'none' ? current : new Date().toISOString().slice(0,10),
+                    showCancelButton: true, confirmButtonText: 'حفظ', cancelButtonText: 'إلغاء',
+                    inputValidator: v => { if (!v) return 'اختر تاريخًا'; if (v < new Date().toISOString().slice(0,10)) return 'يجب أن يكون التاريخ اليوم أو بعده'; }
+                });
+                if (!date) return;
+                expiresValue = new Date(date + 'T23:59:59').toISOString();
+            } else if (mode === 'none') {
+                permanentValue = false;
+            }
+            const { error } = await db.rpc('admin_set_store_subscription', { p_store: id, p_permanent: permanentValue, p_expires_at: expiresValue });
+            if (error) return Swal.fire('خطأ', error.message, 'error');
+            Swal.fire({toast:true, position:'top', icon:'success', title:'تم تحديث اشتراك المتجر', showConfirmButton:false, timer:1700});
             loadSuperStores();
         }
         window.superDelete = async function(id, name) {
