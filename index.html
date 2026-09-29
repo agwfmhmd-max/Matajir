@@ -630,7 +630,7 @@
             <div class="border-t border-white/10 mt-8 pt-5 text-center text-xs text-gray-400">
                 © <span id="footerYear"></span> <span class="footerStoreNameInline">المتجر</span>. جميع الحقوق محفوظة.
                 <div class="mt-2">
-                    <a class="mda-signature" href="https://wa.me/2220479962" target="_blank" rel="noopener" aria-label="MDA WhatsApp">MDA</a>
+                    <a class="mda-signature" href="https://wa.me/22224241012" target="_blank" rel="noopener" aria-label="MDA WhatsApp">MDA</a>
                 </div>
             </div>
         </div>
@@ -1038,7 +1038,7 @@
                 if (row && row.o_number) { number = '#' + row.o_number; if (row.o_created) created = new Date(row.o_created); }
                 else number = '#------';
                 const msg = buildOrderMessage({ number, created, name, phone, notes, items, total });
-                window.open(`https://wa.me/22224241012?text=${encodeURIComponent(msg)}`, '_blank');
+                window.open(`https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
                 cart = []; saveCart(); updateCartUI(); closeOrderModal();
                 document.getElementById('customerNotes').value = '';
                 Swal.fire({ icon: 'success', title: 'تم تجهيز طلبك', text: 'أكمل الإرسال من واتساب وسنؤكد طلبك قريبًا', confirmButtonText: 'حسنًا' });
@@ -1219,8 +1219,8 @@
 
         function refreshContactUI() {
             try {
-                const wa = '24241012';
-                 const waDisplay = '+222 ' + wa;
+                const wa = (STORE_CONFIG.whatsappNumber || '').replace(/[^0-9]/g,'');
+                const waDisplay = wa ? ('+' + wa) : '';
                 const lat = STORE_CONFIG.locationLat, lng = STORE_CONFIG.locationLng;
                 const label = STORE_CONFIG.locationLabel || '';
                 const mapUrl = (STORE_CONFIG.mapUrl && STORE_CONFIG.mapUrl.trim()) ? STORE_CONFIG.mapUrl.trim() : ((lat && lng) ? `https://www.google.com/maps?q=${lat},${lng}` : '');
