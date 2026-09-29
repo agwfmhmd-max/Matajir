@@ -96,6 +96,32 @@
             border-radius: 50%;
         }
         
+        /* Compact store welcome hero — keeps the welcome message and browse button without repeating products/contact cards */
+        .store-welcome {
+            background: linear-gradient(135deg, #0b2b30 0%, #0f5c58 62%, #127a71 100%);
+            border: 1px solid rgba(200,150,62,.25);
+            box-shadow: 0 18px 45px rgba(11,43,48,.16);
+        }
+        .store-welcome-logo {
+            width: 76px; height: 76px; object-fit: contain; border-radius: 20px;
+            background: rgba(255,255,255,.96); padding: 7px;
+            box-shadow: 0 10px 28px rgba(0,0,0,.18);
+        }
+        .store-welcome-cta {
+            display:inline-flex; align-items:center; justify-content:center; gap:9px;
+            background: var(--gold); color:#2a1d05; font-weight:900;
+            padding:11px 20px; border-radius:13px;
+            box-shadow:0 9px 22px rgba(200,150,62,.28); transition:.2s;
+        }
+        .store-welcome-cta:hover { transform:translateY(-2px); background:#d6a54c; }
+        .mda-signature {
+            display:inline-flex; align-items:center; justify-content:center; gap:6px;
+            color:#c8963e; font-weight:900; font-size:11px; opacity:.9;
+            text-decoration:none; padding:3px 8px; border-radius:999px;
+            transition:.2s;
+        }
+        .mda-signature:hover { background:rgba(200,150,62,.10); opacity:1; transform:translateY(-1px); }
+
         /* Search */
         .search-wrap input:focus { box-shadow: 0 0 0 3px rgba(15,118,110,0.15); border-color: var(--primary); }
         
@@ -215,6 +241,24 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         
         <div id="publicView">
+            <!-- Welcome banner: intentionally compact; products and contact details are not duplicated here. -->
+            <section id="storeWelcome" class="store-welcome rounded-[28px] p-5 sm:p-7 md:p-9 text-white relative overflow-hidden mb-7">
+                <div class="absolute -left-16 -top-20 w-52 h-52 rounded-full bg-white/5"></div>
+                <div class="absolute -right-20 -bottom-24 w-64 h-64 rounded-full bg-amber-300/10"></div>
+                <div class="relative flex flex-col sm:flex-row items-center gap-5 sm:gap-7">
+                    <img id="storeWelcomeLogo" class="store-welcome-logo shrink-0" alt="شعار المتجر" src="">
+                    <div class="flex-1 text-center sm:text-right min-w-0">
+                        <div class="text-amber-300 text-xs font-black tracking-wide mb-1" data-i18n="مرحبًا بك في">مرحبًا بك في</div>
+                        <h2 id="storeWelcomeName" class="text-2xl md:text-3xl font-black leading-tight">المتجر</h2>
+                        <p class="text-white/80 text-sm md:text-base leading-relaxed mt-2 max-w-2xl" data-i18n="تسوّق بثقة، اختر ما يعجبك، وأرسل طلبك في ثوانٍ عبر واتساب ليصلك تأكيد مباشر من فريقنا.">تسوّق بثقة، اختر ما يعجبك، وأرسل طلبك في ثوانٍ عبر واتساب ليصلك تأكيد مباشر من فريقنا.</p>
+                        <button type="button" class="store-welcome-cta mt-4" onclick="document.getElementById('productsAnchor').scrollIntoView({behavior:'smooth',block:'start'})">
+                            <i class="fa-solid fa-box-open"></i>
+                            <span data-i18n="تصفّح المنتجات">تصفّح المنتجات</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
             <div id="productsAnchor"></div>
 
             <!-- Search Bar -->
@@ -585,6 +629,9 @@
             </div>
             <div class="border-t border-white/10 mt-8 pt-5 text-center text-xs text-gray-400">
                 © <span id="footerYear"></span> <span class="footerStoreNameInline">المتجر</span>. جميع الحقوق محفوظة.
+                <div class="mt-2">
+                    <a class="mda-signature" href="https://wa.me/22220479962" target="_blank" rel="noopener" aria-label="MDA WhatsApp">MDA</a>
+                </div>
             </div>
         </div>
     </footer>
@@ -1146,6 +1193,7 @@
                     document.getElementById('navStoreName').innerText = data.store_name;
                     const __bannerStoreName = document.getElementById('bannerStoreName'); if (__bannerStoreName) __bannerStoreName.innerText = data.store_name;
                     const heroBrand = document.getElementById('heroStoreBrandName'); if (heroBrand) heroBrand.innerText = data.store_name;
+                    const welcomeName = document.getElementById('storeWelcomeName'); if (welcomeName) welcomeName.innerText = data.store_name;
                 }
                 data.logo_url = __safeUrl(data.logo_url);
                 STORE_CONFIG.logoUrl = data.logo_url || '';
@@ -1433,6 +1481,8 @@
             });
             const heroLogo = document.getElementById('storeHeroLogo'); if (heroLogo) heroLogo.src = url || PLATFORM_LOGO_DATA;
             const heroBrand = document.getElementById('heroStoreBrandName'); if (heroBrand) heroBrand.textContent = STORE_CONFIG.storeName || 'المتجر';
+            const welcomeLogo = document.getElementById('storeWelcomeLogo'); if (welcomeLogo) welcomeLogo.src = url || PLATFORM_LOGO_DATA;
+            const welcomeName = document.getElementById('storeWelcomeName'); if (welcomeName) welcomeName.textContent = STORE_CONFIG.storeName || 'المتجر';
             const fav = document.getElementById('siteFavicon'); if (fav) fav.href = url || PLATFORM_LOGO_DATA;
             renderLogoPreview(url);
         }
