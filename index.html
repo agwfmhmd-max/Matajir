@@ -323,6 +323,46 @@ nav .flex.items-center.gap-2>button:hover{background:#fff!important;border-color
 #footerLogoBox{background:rgba(200,150,62,.16)!important;border-radius:14px!important}#footerLogoBox i{color:var(--gold)}
 .wa-float{box-shadow:0 12px 30px rgba(37,211,102,.4)!important}
 @media(max-width:480px){.pc-title{font-size:14px}.pc-price b{font-size:18px}.pc-add{height:42px}.pc-media{border-radius:20px}}
+
+/* ---- Super admin ---- */
+#superAdmin header{background:rgba(250,248,244,.9)!important;backdrop-filter:blur(16px);border-bottom:1px solid var(--line)!important}
+#superAdmin header h2{color:var(--ink)!important;font-weight:900}
+#superAdmin header>div>div:first-child>div:first-child{background:var(--ink)!important;border-radius:14px!important;box-shadow:none!important}
+#superAdmin header .fa-crown{color:var(--gold)!important}
+#superAdmin header button{border-radius:999px!important;background:#fff!important;border:1px solid var(--line);color:var(--ink)!important}
+#superAdmin header button:hover{border-color:var(--ink)}
+#superAdmin h3{color:var(--ink)!important;font-size:24px!important;font-weight:900}
+#superStores{gap:18px!important}
+#superStores>div{background:#fff!important;border:1px solid var(--line)!important;border-radius:var(--r-lg)!important;padding:22px!important;box-shadow:var(--sh-1)!important;transition:.25s}
+#superStores>div:hover{box-shadow:var(--sh-2)!important;transform:translateY(-3px)}
+#superStores>div.border-red-200{background:#fff7f5!important;border-color:#f6c9c0!important}
+#superStores h4{color:var(--ink)!important;font-size:17px}
+#superStores .grid button,#superStores .grid a{border-radius:999px!important;padding:9px 6px!important;transition:.2s;border:1px solid transparent}
+#superStores .grid a{background:var(--ink)!important}
+#superStores .grid a:hover{background:var(--primary)!important}
+#superStores .grid button:hover{border-color:currentColor;transform:translateY(-1px)}
+#superStores span.rounded-full{font-weight:900}
+
+/* ---- Sort control + a11y ---- */
+.sort-box{position:relative;flex:none}
+.sort-box select{appearance:none;-webkit-appearance:none;background:#fff;border:1px solid var(--line);border-radius:999px;padding:10px 18px 10px 38px;font-family:inherit;font-size:13px!important;font-weight:800;color:var(--ink);cursor:pointer;box-shadow:var(--sh-1)}
+.sort-box select:hover{border-color:var(--ink)}
+.sort-box i{position:absolute;inset-inline-start:14px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted);pointer-events:none}
+button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* ---- Offers strip ---- */
+#offersSection{margin:0 0 34px}
+.offers-row{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 14px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.offers-row::-webkit-scrollbar{display:none}
+.offer{flex:none;width:168px;scroll-snap-align:start;cursor:pointer;background:#fff;border:1px solid var(--line);border-radius:22px;padding:8px;box-shadow:var(--sh-1);transition:.3s}
+.offer:hover{transform:translateY(-4px);box-shadow:var(--sh-2)}
+.offer-img{position:relative;aspect-ratio:1/1;border-radius:16px;overflow:hidden;background:#efece4}
+.offer-img img,.offer-img video{width:100%;height:100%;object-fit:cover;display:block}
+.offer-img span{position:absolute;top:8px;inset-inline-start:8px;background:var(--ink);color:var(--gold);font-size:11px;font-weight:900;padding:3px 9px;border-radius:999px}
+.offer h4{font-size:13px;font-weight:800;color:var(--ink);margin:10px 4px 4px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.offer p{margin:0 4px 4px;display:flex;align-items:baseline;gap:6px}
+.offer p b{font-size:16px;font-weight:900;color:var(--ink)}.offer p s{font-size:11px;color:#a3adae;font-weight:700}
+@media(min-width:768px){.offer{width:200px}}
     </style>
 </head>
 <body class="relative pb-20">
@@ -353,11 +393,11 @@ nav .flex.items-center.gap-2>button:hover{background:#fff!important;border-color
                 <div class="flex items-center gap-2">
                     <button id="languageToggle" type="button" onclick="toggleLanguage()" class="px-3 py-2 rounded-xl border border-teal-100 bg-white text-teal-800 font-black text-xs shadow-sm hover:bg-teal-50 transition" title="Français">FR</button>
                     <div id="adminBadge" class="hidden badge badge-admin"><i class="fa-solid fa-shield-halved"></i> مشرف</div>
-                    <button onclick="toggleFavorites()" class="relative p-2.5 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all text-lg">
+                    <button onclick="toggleFavorites()" aria-label="المفضلة" class="relative p-2.5 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all text-lg">
                         <i class="fa-solid fa-heart"></i>
                         <span id="favCount" class="absolute -top-1 -right-1 bg-gradient-to-br from-red-500 to-rose-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">0</span>
                     </button>
-                    <button onclick="toggleCart()" class="relative p-2.5 text-gray-500 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all text-lg">
+                    <button onclick="toggleCart()" aria-label="السلة" class="relative p-2.5 text-gray-500 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all text-lg">
                         <i class="fa-solid fa-cart-shopping"></i>
                         <span id="cartCount" class="absolute -top-1 -right-1 bg-gradient-to-br from-teal-500 to-cyan-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">0</span>
                     </button>
@@ -400,10 +440,12 @@ nav .flex.items-center.gap-2>button:hover{background:#fff!important;border-color
             <!-- Categories -->
             <div id="categoriesWrapper" class="flex overflow-x-auto gap-2 mb-8 pb-2 smooth-scroll whitespace-nowrap hidden-scrollbar"></div>
 
+            <section id="offersSection" class="hidden"><div class="flex items-center justify-between mb-3"><div><h2 class="sec-title"><i class="fa-solid fa-tag" style="color:var(--gold);font-size:.8em"></i> عروض وتخفيضات</h2><p class="sec-sub">وفّر أكثر على منتجات مختارة</p></div></div><div id="offersRow" class="offers-row"></div></section>
             <div class="flex items-center justify-between mb-6">
                 <div>
                     <h2 class="sec-title">أحدث المنتجات</h2><p class="sec-sub"><span id="resultsCount">0</span> منتج</p>
                 </div>
+                <div class="sort-box"><i class="fa-solid fa-arrow-down-wide-short"></i><select id="sortSelect" onchange="applyFilters()" aria-label="ترتيب المنتجات"><option value="new">ترتيب: الأحدث</option><option value="low">السعر: الأقل أولاً</option><option value="high">السعر: الأعلى أولاً</option><option value="sale">الأكثر خصمًا</option></select></div>
             </div>
             
             <div id="productsGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
@@ -910,7 +952,14 @@ nav .flex.items-center.gap-2>button:hover{background:#fff!important;border-color
             'حفظ الموقع':'Enregistrer l’emplacement', 'حفظ':'Enregistrer', 'مثال: متجر الأناقة':'Exemple : Boutique Élégance', 'مثال: 24241012':'Exemple : 24241012',
             'اسمك الكريم':'Votre nom', 'اللون، المقاس، وقت الاستلام المناسب...':'Couleur, taille, heure de retrait souhaitée...', 'مثال: نواكشوط، حي كبة':'Exemple : Nouakchott, quartier Kébé',
             'مثال: نواكشوط - حي كبة - شارع المستشفى - بجانب صيدلية الشفاء':'Exemple : Nouakchott - quartier Kébé - rue de l’hôpital - près de la pharmacie Al Chifa',
-            'اضغط هنا للإدارة':'Cliquez ici pour gérer', 'بحث':'Rechercher'
+            'اضغط هنا للإدارة':'Cliquez ici pour gérer', 'بحث':'Rechercher',
+            'اطلب بسهولة وأكّد طلبك مباشرة عبر واتساب':'Commandez facilement et confirmez directement sur WhatsApp',
+            'تأكيد الطلب مباشرة عبر واتساب':'Confirmation directe via WhatsApp',
+            'لا دفع داخل الموقع — الدفع بالاتفاق':'Aucun paiement en ligne — paiement convenu avec la boutique',
+            'تواصل مباشر مع المتجر':'Contact direct avec la boutique',
+            'أضف للسلة':'Ajouter au panier','غير متوفر':'Indisponible',
+            'ترتيب: الأحدث':'Trier : Plus récents','السعر: الأقل أولاً':'Prix : croissant','السعر: الأعلى أولاً':'Prix : décroissant','الأكثر خصمًا':'Plus fortes réductions',
+            'عروض وتخفيضات':'Offres et promotions','وفّر أكثر على منتجات مختارة':'Économisez plus sur une sélection de produits'
         };
         const CAT_FR = {'الكل':'Tous','إلكترونيات وجوالات':'Électronique et téléphones','ملابس وأزياء':'Vêtements et mode','عطور وتجميل':'Parfums et beauté','أحذية وحقائب':'Chaussures et sacs','مستلزمات منزلية':'Articles ménagers','أخرى':'Autres'};
         const __i18nTextOriginal = new WeakMap();
@@ -1024,8 +1073,24 @@ nav .flex.items-center.gap-2>button:hover{background:#fff!important;border-color
             let filtered = productsData;
             if (currentCategory !== 'الكل') filtered = filtered.filter(p => (p.category || 'أخرى') === currentCategory);
             if (query !== '') filtered = filtered.filter(p => p.name.toLowerCase().includes(query) || (p.description && p.description.toLowerCase().includes(query)));
-            renderPublicProducts(filtered);
+            const __sv = (document.getElementById('sortSelect')||{}).value || 'new';
+            if (__sv !== 'new') { const __fp = p => p.price - (p.price * (p.discount_percentage || 0) / 100); filtered = [...filtered].sort((a, b) => __sv === 'low' ? __fp(a) - __fp(b) : __sv === 'high' ? __fp(b) - __fp(a) : (b.discount_percentage || 0) - (a.discount_percentage || 0)); }
+            renderPublicProducts(filtered); renderOffers();
         }
+        function renderOffers() {
+            const sec = document.getElementById('offersSection'), row = document.getElementById('offersRow'); if (!sec || !row) return;
+            const q = (document.getElementById('searchInput').value || '').trim();
+            const sale = productsData.filter(p => p.discount_percentage > 0 && p.quantity > 0).sort((a, b) => b.discount_percentage - a.discount_percentage).slice(0, 12);
+            if (currentCategory !== 'الكل' || q !== '' || sale.length === 0) { sec.classList.add('hidden'); row.innerHTML = ''; return; }
+            row.innerHTML = sale.map(p => {
+                const fp = Math.round(p.price - (p.price * p.discount_percentage / 100));
+                const nm = currentLanguage === 'fr' && p.name_fr ? p.name_fr : p.name;
+                const m = p.media_type === 'video' ? `<video src="${p.media_url}" muted playsinline></video>` : `<img src="${p.media_url}" alt="" loading="lazy">`;
+                return `<div class="offer" onclick="openProductModal('${p.id}')"><div class="offer-img">${m}<span>-${p.discount_percentage}%</span></div><h4>${nm}</h4><p><b>${fp} MRU</b><s>${p.price}</s></p></div>`;
+            }).join('');
+            sec.classList.remove('hidden');
+        }
+
         window.searchProducts = function() { applyFilters(); }
 
         function renderPublicProducts(products) {
@@ -1569,8 +1634,11 @@ nav .flex.items-center.gap-2>button:hover{background:#fff!important;border-color
         const __origSwitch = window.switchAdminTab;
         window.switchAdminTab = function(tab) {
             __origSwitch(tab);
+            __markAdminTab(tab);
             if (tab === 'settings') { populateSettingsForm(); setTimeout(initPickerMap, 150); }
         }
+        function __markAdminTab(tab) { document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.toggle('active', (b.getAttribute('onclick') || '').includes("switchAdminTab('" + tab + "')"))); }
+        __markAdminTab('add');
 
         // ============ تعديل verifyOrder لإرسال رسالة احترافية على واتساب بعد القبول ============
         window.verifyOrder = async function(orderId, itemsJson) {
