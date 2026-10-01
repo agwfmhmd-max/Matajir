@@ -1047,7 +1047,7 @@ button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(
                 const { data: products, error } = await db.from('products').select('*').eq('store_id', STORE_ID).order('created_at', { ascending: false });
                 if (error) throw error;
                 products.forEach(p => { p.name = __safe(p.name); p.description = __safe(p.description); p.name_fr = __safe(p.name_fr || ''); p.description_fr = __safe(p.description_fr || ''); p.category = __safe(p.category); p.media_url = __safeUrl(p.media_url); if (Array.isArray(p.media_gallery)) p.media_gallery = p.media_gallery.map(m => ({ ...m, url: __safeUrl(m && m.url) })); });
-                productsData = products; renderCategories(productsData); applyFilters(); renderAdminInventory(productsData); updateFavUI(); __i18nRefreshDynamic();
+                productsData = products; renderCategories(productsData); applyFilters(); renderAdminInventory(productsData); updateFavUI(); __i18nRefreshDynamic(); if (!window.__deepOpened) { window.__deepOpened = true; try { const __pid = new URLSearchParams(location.search).get('p'); if (__pid && productsData.some(x => x.id === __pid)) setTimeout(() => openProductModal(__pid), 350); } catch (e) {} }
             } catch (err) { console.error(err); }
         }
 
@@ -1994,7 +1994,7 @@ button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(
             const p = productsData.find(x => x.id === __pmShareId); if (!p) return;
             const fp = Math.round(p.price - (p.price * (p.discount_percentage || 0) / 100));
             const nm = currentLanguage === 'fr' && p.name_fr ? p.name_fr : p.name;
-            const url = location.origin + location.pathname, text = nm + ' — ' + fp + ' MRU';
+            const url = location.origin + location.pathname + '?p=' + encodeURIComponent(p.id), text = nm + ' — ' + fp + ' MRU';
             if (navigator.share) { navigator.share({ title: nm, text: text, url: url }).catch(() => {}); return; }
             window.open('https://wa.me/?text=' + encodeURIComponent(text + '\n' + url), '_blank');
         };
