@@ -404,6 +404,14 @@ html[data-theme="dark"] #siteFooter{background:#0a1214!important}
 html[data-theme="dark"] #uiStoreName+*,html[data-theme="dark"] .store-welcome{color:#fff}
 #themeToggle{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--ink);display:inline-flex;align-items:center;justify-content:center;font-size:14px;transition:.2s;cursor:pointer}
 #themeToggle:hover{border-color:var(--ink)}
+
+/* ---- Dark mode: close/slider buttons + light hero card ---- */
+html[data-theme="dark"] #productModal button[onclick="closeProductModal()"],html[data-theme="dark"] #productModal button[onclick="prevSlide()"],html[data-theme="dark"] #productModal button[onclick="nextSlide()"]{background:rgba(10,18,20,.88)!important;color:#fff!important;border:1px solid rgba(255,255,255,.35);box-shadow:0 4px 14px rgba(0,0,0,.55)}
+html[data-theme="dark"] #productModal button[onclick="closeProductModal()"] i,html[data-theme="dark"] #productModal button[onclick="prevSlide()"] i,html[data-theme="dark"] #productModal button[onclick="nextSlide()"] i{color:#fff!important}
+html[data-theme="dark"] #productModal button[onclick="closeProductModal()"]:hover,html[data-theme="dark"] #productModal button[onclick="prevSlide()"]:hover,html[data-theme="dark"] #productModal button[onclick="nextSlide()"]:hover{background:var(--primary)!important;border-color:var(--primary)}
+html[data-theme="dark"] #productModal #sliderThumbnails{background:var(--surface)!important}
+html[data-theme="dark"] div.bg-white\/95 :is(.text-gray-900,.text-gray-800,.text-gray-700,.text-gray-600,.text-teal-800,.text-teal-900){color:#1c2b2e!important}
+html[data-theme="dark"] div.bg-white\/95 :is(.text-gray-500,.text-gray-400){color:#6b7a7c!important}
     </style>
 </head>
 <body class="relative pb-20">
@@ -1001,7 +1009,7 @@ html[data-theme="dark"] #uiStoreName+*,html[data-theme="dark"] .store-welcome{co
             'تواصل مباشر مع المتجر':'Contact direct avec la boutique',
             'أضف للسلة':'Ajouter au panier','غير متوفر':'Indisponible',
             'ترتيب: الأحدث':'Trier : Plus récents','السعر: الأقل أولاً':'Prix : croissant','السعر: الأعلى أولاً':'Prix : décroissant','الأكثر خصمًا':'Plus fortes réductions',
-            'عروض وتخفيضات':'Offres et promotions','وفّر أكثر على منتجات مختارة':'Économisez plus sur une sélection de produits'
+            'سيتم خصم كميات هذا الطلب من المخزون في المنصة':'Les quantités de cette commande seront déduites du stock de la plateforme','عروض وتخفيضات':'Offres et promotions','وفّر أكثر على منتجات مختارة':'Économisez plus sur une sélection de produits'
         };
         const CAT_FR = {'الكل':'Tous','إلكترونيات وجوالات':'Électronique et téléphones','ملابس وأزياء':'Vêtements et mode','عطور وتجميل':'Parfums et beauté','أحذية وحقائب':'Chaussures et sacs','مستلزمات منزلية':'Articles ménagers','أخرى':'Autres'};
         const __i18nTextOriginal = new WeakMap();
@@ -1682,13 +1690,12 @@ html[data-theme="dark"] #uiStoreName+*,html[data-theme="dark"] .store-welcome{co
         function __markAdminTab(tab) { document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.toggle('active', (b.getAttribute('onclick') || '').includes("switchAdminTab('" + tab + "')"))); }
         __markAdminTab('add');
 
-        // ============ تعديل verifyOrder لإرسال رسالة احترافية على واتساب بعد القبول ============
+        // ============ verifyOrder: تأكيد الطلب وخصم الكميات داخل المنصة فقط (بدون رسائل واتساب) ============
         window.verifyOrder = async function(orderId, itemsJson) {
             const items = JSON.parse(decodeURIComponent(itemsJson));
-            const confirm = await Swal.fire({ title: 'تأكيد الطلب؟', text: 'سيتم خصم الكميات وفتح رسالة تأكيد للعميل على واتساب', icon:'question', showCancelButton: true, confirmButtonText:'نعم، تأكيد', cancelButtonText:'إلغاء' });
+            const confirm = await Swal.fire({ title: 'تأكيد الطلب؟', text: 'سيتم خصم كميات هذا الطلب من المخزون في المنصة', icon:'question', showCancelButton: true, confirmButtonText:'نعم، تأكيد', cancelButtonText:'إلغاء' });
             if (!confirm.isConfirmed) return;
             try {
-                const { data: orderRow } = await db.from('orders').select('*').eq('id', orderId).single();
                 for (let item of items) {
                     const { data: pData } = await db.from('products').select('quantity').eq('id', item.id).single();
                     if (pData) await db.from('products').update({ quantity: Math.max(0, pData.quantity - item.qty) }).eq('id', item.id);
@@ -1696,21 +1703,6 @@ html[data-theme="dark"] #uiStoreName+*,html[data-theme="dark"] .store-welcome{co
                 await db.from('orders').update({ status: 'تم التأكيد' }).eq('id', orderId);
                 Swal.fire('تم', 'تم تأكيد الطلب وخصم الكميات', 'success');
                 loadOrders(); loadProducts();
-                if (orderRow && orderRow.customer_phone) {
-                    const sep = '━━━━━━━━━━━━━━━';
-                    const lat = STORE_CONFIG.locationLat, lng = STORE_CONFIG.locationLng;
-                    const mapsLink = (STORE_CONFIG.mapUrl && STORE_CONFIG.mapUrl.trim()) ? STORE_CONFIG.mapUrl.trim() : ((lat && lng) ? `https://maps.google.com/?q=${lat},${lng}` : '');
-                    let msg = `✅ *تأكيد الطلب — ${STORE_CONFIG.storeName}*\n${sep}\n`;
-                    msg += `مرحبًا *${__safe(orderRow.customer_name)}* 👋\nيسعدنا إبلاغك بأنه تم تأكيد طلبك وهو الآن قيد التجهيز.\n${sep}\n`;
-                    msg += `🧾 *رقم الطلب:* #${orderRow.order_number || '------'}\n📦 *المنتجات:*\n`;
-                    (orderRow.items || items).forEach((i, n) => { msg += `${n + 1}. ${i.name} (×${i.qty})\n`; });
-                    msg += `${sep}\n💰 *الإجمالي:* ${orderRow.total_amount} MRU\n${sep}\n`;
-                    if (STORE_CONFIG.locationLabel || mapsLink) { msg += `📍 *موقع المحل*\n`; if (STORE_CONFIG.locationLabel) msg += `${STORE_CONFIG.locationLabel}\n`; if (mapsLink) msg += `${mapsLink}\n`; msg += `${sep}\n`; }
-                    msg += `يمكنك التواصل معنا هنا لتحديد طريقة الدفع وموعد الاستلام المناسب.\nشكرًا لثقتك بنا 🌹\n*فريق ${STORE_CONFIG.storeName}*`;
-                    let phone = String(orderRow.customer_phone).replace(/\D/g, '');
-                    if (phone.length < 10) phone = '222' + phone;
-                    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-                }
             } catch (err) { Swal.fire('خطأ', err.message, 'error'); }
         }
 
